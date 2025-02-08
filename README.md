@@ -21,7 +21,7 @@ https://available-soon
 - Import database into MongoDB Compass:
 
       1. Open MongoDB Compass.
-      2. Create new database named as "task_management" and collection name as "register_user". These names are defined in src/app/api/register/route.ts
+      2. Create new database named as "team_manager_db" and collection name as "register_users". These names are defined in src/app/api/register/route.ts
       3. If you want to add our created-data, then you can follow below instructions.
             a. Before proceed instructions, it is noted that if you already created data, then unique ID may be duplicated with our Data-IDs. Therefore, be carefull otherwise database-error may rise.
             Create database and collection as mentioned above.

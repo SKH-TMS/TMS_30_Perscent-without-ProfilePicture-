@@ -7,6 +7,7 @@ interface User {
   lastName: string;
   email: string;
   contact: string;
+  profilePicture: string;
 }
 
 export default function Dashboard() {
@@ -20,7 +21,9 @@ export default function Dashboard() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [showUploadSection, setShowUploadSection] = useState(false);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -47,7 +50,39 @@ export default function Dashboard() {
 
     fetchUserData();
   }, []);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+  const handleUpload = async () => {
+    if (!image || !user) return;
 
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("email", user.email);
+
+    try {
+      const res = await fetch("/api/profile/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Failed to upload image");
+
+      const data = await res.json();
+      setUser((prev) =>
+        prev ? { ...prev, profilePicture: data.profilePicture } : null
+      );
+      alert("Profile picture updated!");
+      setShowUploadSection(false);
+    } catch (error) {
+      console.error("❌ Error uploading profile picture:", error);
+      alert("Failed to upload. Try again.");
+    }
+  };
   const handleUpdate = async () => {
     if (!user) return;
     try {
@@ -142,9 +177,35 @@ export default function Dashboard() {
         <h2 className="text-2xl font-bold">
           Welcome, {user.firstName} {user.lastName}!
         </h2>
+        <img
+          src={user.profilePicture}
+          alt="Profile"
+          className="rounded-full w-32 h-32 mx-auto mb-4"
+        />
         <p className="text-gray-600 mt-2">Email: {user.email}</p>
         <p className="text-gray-600 mt-2">Contact: {user.contact}</p>
-
+        {/* Change Profile Photo Section */}
+        <div className="mt-4">
+          <button
+            onClick={() => setShowUploadSection(!showUploadSection)}
+            className="formButton"
+          >
+            Change Profile Photo
+          </button>
+          {showUploadSection && (
+            <div className="mt-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="mt-2"
+              />
+              <button onClick={handleUpload} className="formButton mt-2">
+                Upload
+              </button>
+            </div>
+          )}
+        </div>
         {editing ? (
           <div className="mt-4">
             <input

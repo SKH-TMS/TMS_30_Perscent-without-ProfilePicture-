@@ -12,5 +12,8 @@ const UserSchema = new mongoose.Schema({
   isAdmin: { type: Boolean, default: false }, // ✅ User Role Field
 });
 
-const User = mongoose.models.User || mongoose.model("User", UserSchema);
+// Create the model and explicitly set the collection name
+const User =
+  mongoose.models.register_user || mongoose.model("register_user", UserSchema);
+
 export default User;

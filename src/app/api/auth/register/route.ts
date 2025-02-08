@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       from: "Team Management System <onboarding@resend.dev>", // Ensure this is a valid sender email
       to: email,
       subject: "Verify Your Email",
-      html: `<p>Click <a href="http://localhost:3000/api/auth/verify-email?token=${verificationToken}">here</a> to verify your email.</p>`,
+      html: `<p>Click <a href="http://localhost:3000/api/auth/verify-email?token=${verificationToken}">here</a> to verify your email.</p> <p>This link will expire in 24 hours.</p>`,
     });
 
     console.log("✅ Email sent:", emailResponse);

@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: "Invalid token" }, { status: 403 });
     }
 
-    // ✅ Ensure `decoded` is a JwtPayload before accessing `.id`
     if (typeof decoded !== "object" || !decoded.id) {
       return NextResponse.json(
         { message: "Invalid token structure" },
@@ -33,8 +32,9 @@ export async function GET(req: NextRequest) {
 
     // Fetch user from database
     const user = await User.findById(decoded.id).select(
-      "firstName lastName email isAdmin"
+      "firstName lastName email isAdmin profilePicture"
     );
+
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
